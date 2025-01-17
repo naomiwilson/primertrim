@@ -115,7 +115,13 @@ class PartialMatcher(Matcher):
 
 class AlignmentMatcher(Matcher):
     def __init__(self, queryset, alignment_dir, align_id, cores=1):
-        self.queryset = queryset
+        #self.queryset = [reverse_complement(seq) for seq in queryset] # a list might not be the right data type
+        queryset = list(queryset)
+        self.queryset = queryset.copy()
+        for seq in queryset:
+            rc_seq = reverse_complement(seq)
+            self.queryset.append(rc_seq)
+                
         if not os.path.exists(alignment_dir):
             raise FileNotFoundError("Alignment directory does not exist")
         if not os.path.isdir(alignment_dir):
